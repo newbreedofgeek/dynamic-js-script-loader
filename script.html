@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic JS Script Loader</title>
+<head>
+    <script type="text/javascript">
+        var environment = "japanese"; // can be default, french etc
+
+        function loadJsFilesSequentially(scriptsCollection, startIndex, librariesLoadedCallback) {
+            if (scriptsCollection[startIndex]) {
+                var fileref = document.createElement('script');
+                fileref.setAttribute("type","text/javascript");
+                fileref.setAttribute("src", scriptsCollection[startIndex]);
+                fileref.onload = function(){
+                    startIndex = startIndex + 1;
+                    loadJsFilesSequentially(scriptsCollection, startIndex, librariesLoadedCallback)
+                };
+
+                document.getElementsByTagName("head")[0].appendChild(fileref)
+            }
+            else {
+                librariesLoadedCallback();
+            }
+        }
+
+        // An array of scripts you want to load in order
+        var scriptLibrary = [];
+        scriptLibrary.push("settings_" + environment + ".js");
+        scriptLibrary.push("theme_" + environment + "default.js");
+        scriptLibrary.push("language_" + environment + ".js");
+        scriptLibrary.push("main.js");
+
+        // Pass the array of scripts you want loaded in order and a callback function to invoke when its done
+        loadJsFilesSequentially(scriptLibrary, 0, function(){
+            // application is "ready to be executed"
+            startProgram();
+        });
+
+        function startProgram(){
+            // all files are loaded so start the program.
+        }
+    </script>
+</head>
+<body></body>
+</html>
