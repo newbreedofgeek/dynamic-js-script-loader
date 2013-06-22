@@ -6,6 +6,20 @@
     <script type="text/javascript">
         var environment = "japanese"; // can be default, french etc
 
+        // Helper Method - Avoid "console" errors in browsers that lack a console.
+        if (!(window.console && console.log)) {
+            (function() {
+                var noop = function() {};
+                var methods = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'exception', 'group', 'groupCollapsed', 'groupEnd', 'info', 'log', 'markTimeline', 'profile', 'profileEnd', 'markTimeline', 'table', 'time', 'timeEnd', 'timeStamp', 'trace', 'warn'];
+                var length = methods.length;
+                var console = window.console = {};
+                while (length--) {
+                    console[methods[length]] = noop;
+                }
+            }());
+        }
+
+        // Main function that load the dynamic sequential loading of the JS files.
         function loadJsFilesSequentially(scriptsCollection, startIndex, librariesLoadedCallback) {
             if (scriptsCollection[startIndex]) {
                 var fileref = document.createElement('script');
@@ -25,21 +39,28 @@
 
         // An array of scripts you want to load in order
         var scriptLibrary = [];
-        scriptLibrary.push("settings_" + environment + ".js");
-        scriptLibrary.push("theme_" + environment + "default.js");
-        scriptLibrary.push("language_" + environment + ".js");
-        scriptLibrary.push("main.js");
+        scriptLibrary.push("js/main.js");
+        scriptLibrary.push("js/settings-" + environment + ".js");
+        scriptLibrary.push("js/theme-" + environment + ".js");
 
-        // Pass the array of scripts you want loaded in order and a callback function to invoke when its done
+        // Pass the array of scripts you want loaded in order and a callback function to invoke when its done.
         loadJsFilesSequentially(scriptLibrary, 0, function(){
             // application is "ready to be executed"
             startProgram();
         });
 
+        // All files are loaded so start the program.
         function startProgram(){
-            // all files are loaded so start the program.
+            alert("All JS files have been loaded and are now available! - View your console for more debug info.");
+
+            // You can now call functions from those JS files.
+            initMain();
+            initSettings();
+            initTheme();
         }
     </script>
 </head>
-<body></body>
+<body>
+Your App
+</body>
 </html>
